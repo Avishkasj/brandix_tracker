@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "248150730493",
+    "project_id": "brandix-ca4c4",
+    "storage_bucket": "brandix-ca4c4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:248150730493:android:898e89b98da285f6450094",
+        "android_client_info": {
+          "package_name": "com.example.brandix_tracker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "248150730493-9th02cebeerucjboulr9msapd3ctf1qj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDWq-M-8tV9yW0BmZC7LzgNXY30r7u8fjI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "248150730493-9th02cebeerucjboulr9msapd3ctf1qj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

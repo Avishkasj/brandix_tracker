@@ -1,4 +1,6 @@
 
+import 'package:brandix_tracker/HomePage.dart';
+import 'package:brandix_tracker/Scanner.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -46,7 +48,7 @@ class _LoginState extends State<Login> {
           child: SizedBox(),
         ),
       ),
-      backgroundColor:  Colors.grey,
+      backgroundColor:  Colors.white,
       body: SafeArea(
         child: Container(
           child: SingleChildScrollView(
@@ -166,29 +168,13 @@ class _LoginState extends State<Login> {
                           return;
                         }
 
-                        querySnapshot.docs.forEach((doc) {
-                          // Access the role value and assign it to a string variable
-                          Map<String, dynamic> data =
-                          doc.data() as Map<String, dynamic>;
-                          String role = data['role'] as String;
-                          print('Role: $role');
+                        print("+++++++++++ login ok+++++");
 
-                          emailController.text="";
-                          passwordController.text="";
-
-                          if (role == '1') {
-                            // Navigator.push(
-                            //   context,
-                            //   MaterialPageRoute(builder: (context) => Customerdashboard()),
-                            // );
-                          } else if (role == '2') {
-                            // Navigator.push(
-                            //   context,
-                            //   MaterialPageRoute(
-                            //       builder: (context) => Riderdashboard()),
-                            // );
-                          }
-                        });
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => Scanner()),
+                        );
                       } on FirebaseAuthException catch (e) {
                         setState(() {
                           errorMessage = e.message!;
