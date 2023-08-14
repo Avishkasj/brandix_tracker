@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+
+import 'CheckList.dart';
 
 class Scanner extends StatefulWidget {
   const Scanner({Key? key}) : super(key: key);
@@ -12,16 +13,14 @@ class _ScannerState extends State<Scanner> {
   String _barcodeResult = 'Scan a barcode';
 
   Future<void> _scanBarcode() async {
-    String barcodeResult = await FlutterBarcodeScanner.scanBarcode(
-      '#ff6666', // Color for the scanner view
-      'Cancel',   // Cancel button text
-      true,       // Show flash icon
-      ScanMode.DEFAULT, // Scan mode (DEFAULT, QR, BARCODE)
-    );
-
-    setState(() {
-      _barcodeResult = barcodeResult;
+    String barcodeResult = await Future.delayed(Duration(seconds: 2), () {
+      return "ScannedDataExample"; // Simulating barcode scan result
     });
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => CheckList(data: barcodeResult)),
+    );
   }
 
   @override
@@ -49,5 +48,3 @@ class _ScannerState extends State<Scanner> {
     );
   }
 }
-
-

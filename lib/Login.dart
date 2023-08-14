@@ -1,9 +1,10 @@
 
 import 'package:brandix_tracker/HomePage.dart';
-import 'package:brandix_tracker/Scanner.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
+import 'SlectLine.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -31,7 +32,7 @@ class _LoginState extends State<Login> {
             decoration: BoxDecoration(
               image: DecorationImage(
                 image: AssetImage('assets/logob.png'),
-                fit: BoxFit.fitHeight,
+                fit: BoxFit.fitWidth,
               ),
             ),
           ),
@@ -39,8 +40,8 @@ class _LoginState extends State<Login> {
         centerTitle: true,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(20),
-            bottomRight: Radius.circular(20),
+            bottomLeft: Radius.circular(10),
+            bottomRight: Radius.circular(10),
           ),
         ),
         bottom: PreferredSize(
@@ -77,7 +78,7 @@ class _LoginState extends State<Login> {
                     decoration: BoxDecoration(
                         color: Colors.white,
                         border: Border.all(color: Colors.black),
-                        borderRadius: BorderRadius.circular(8)),
+                        borderRadius: BorderRadius.circular(4)),
                     child: Padding(
                       padding: const EdgeInsets.only(left: 20.0),
                       child: TextField(
@@ -102,7 +103,7 @@ class _LoginState extends State<Login> {
                     decoration: BoxDecoration(
                         color: Colors.white,
                         border: Border.all(color: Colors.black),
-                        borderRadius: BorderRadius.circular(8)),
+                        borderRadius: BorderRadius.circular(4)),
                     child: Padding(
                       padding: const EdgeInsets.only(left: 20.0),
                       child: TextField(
@@ -173,7 +174,7 @@ class _LoginState extends State<Login> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => Scanner()),
+                              builder: (context) => SelectLine()),
                         );
                       } on FirebaseAuthException catch (e) {
                         setState(() {
