@@ -83,7 +83,7 @@ class _CheckListState extends State<CheckList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.redAccent,
+        backgroundColor: Colors.red,
         title: Text('Checklist'),
       ),
       body: Column(
@@ -145,7 +145,7 @@ class _CheckListState extends State<CheckList> {
                     });
                   },
                   style: ElevatedButton.styleFrom(
-                    primary: Colors.blue, // Set the desired button color
+                    primary: Colors.red, // Set the desired button color
                     fixedSize: Size(double.infinity, 50), // Set the desired button height
                   ),
                   child: Text('Mark All Checked'),

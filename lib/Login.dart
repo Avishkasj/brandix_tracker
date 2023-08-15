@@ -176,6 +176,10 @@ class _LoginState extends State<Login> {
                           MaterialPageRoute(
                               builder: (context) => SelectLine()),
                         );
+
+
+                        emailController.text="";
+                        passwordController.text="";
                       } on FirebaseAuthException catch (e) {
                         setState(() {
                           errorMessage = e.message!;
