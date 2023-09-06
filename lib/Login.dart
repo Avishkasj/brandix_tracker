@@ -1,4 +1,3 @@
-
 import 'package:brandix_tracker/HomePage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -49,14 +48,16 @@ class _LoginState extends State<Login> {
           child: SizedBox(),
         ),
       ),
-      backgroundColor:  Colors.white,
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: Container(
           child: SingleChildScrollView(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SizedBox(height: 40,),
+                SizedBox(
+                  height: 40,
+                ),
                 Padding(
                   padding: const EdgeInsets.all(25.0),
                   child: Text(
@@ -150,36 +151,30 @@ class _LoginState extends State<Login> {
                           return;
                         }
 
-                        // Get the user ID using your authentication method
                         String? uid =
-                        await getUidFromEmailAndPassword(email, password);
+                            await getUidFromEmailAndPassword(email, password);
 
-                        // Check if the user exists in the database
                         QuerySnapshot querySnapshot =
-                        await FirebaseFirestore.instance
-                            .collection('user')
-                            .where('uid', isEqualTo: uid)
-                            .limit(1) // Limit the query to 1 document
-                            .get();
+                            await FirebaseFirestore.instance
+                                .collection('user')
+                                .where('uid', isEqualTo: uid)
+                                .limit(1) // Limit the query to 1 document
+                                .get();
 
-                        if (uid==null) {
+                        if (uid == null) {
                           setState(() {
                             errorMessage = 'User not found';
                           });
                           return;
                         }
 
-                        print("+++++++++++ login ok+++++");
-
                         Navigator.push(
                           context,
-                          MaterialPageRoute(
-                              builder: (context) => SelectLine()),
+                          MaterialPageRoute(builder: (context) => SelectLine()),
                         );
 
-
-                        emailController.text="";
-                        passwordController.text="";
+                        emailController.text = "";
+                        passwordController.text = "";
                       } on FirebaseAuthException catch (e) {
                         setState(() {
                           errorMessage = e.message!;
@@ -236,7 +231,7 @@ class _LoginState extends State<Login> {
       String email, String password) async {
     try {
       UserCredential userCredential =
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
+          await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
