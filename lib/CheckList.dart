@@ -8,9 +8,9 @@ class ChecklistItem {
   bool isChecked;
   bool isError;
 
-  ChecklistItem({required this.title, this.isChecked = false, this.isError = false});
+  ChecklistItem(
+      {required this.title, this.isChecked = false, this.isError = false});
 }
-
 
 class CheckList extends StatefulWidget {
   final String data;
@@ -146,12 +146,12 @@ class _CheckListState extends State<CheckList> {
                   },
                   style: ElevatedButton.styleFrom(
                     primary: Colors.red, // Set the desired button color
-                    fixedSize: Size(double.infinity, 50), // Set the desired button height
+                    fixedSize: Size(
+                        double.infinity, 50), // Set the desired button height
                   ),
                   child: Text('Mark All Checked'),
                 ),
               ),
-
               Expanded(
                 child: ElevatedButton(
                   onPressed: () {
@@ -159,20 +159,16 @@ class _CheckListState extends State<CheckList> {
                   },
                   style: ElevatedButton.styleFrom(
                     primary: Colors.green, // Set the desired button color
-                    fixedSize: Size(double.infinity, 50), // Set the desired button height
+                    fixedSize: Size(
+                        double.infinity, 50), // Set the desired button height
                   ),
                   child: Text('Next'),
                 ),
-
               ),
             ],
           )
-
         ],
       ),
     );
   }
-
-  
-  
 }
