@@ -1,265 +1,205 @@
-import 'package:brandix_tracker/HomePage.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'dart:core';
 
-import 'SlectLine.dart';
+import 'package:email_validator/email_validator.dart';
+
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class Login extends StatefulWidget {
-  const Login({Key? key}) : super(key: key);
-
   @override
-  State<Login> createState() => _LoginState();
+  _LoginState createState() => _LoginState();
 }
 
-final TextEditingController emailController = TextEditingController();
-final TextEditingController passwordController = TextEditingController();
-String errorMessage = '';
-var userRole;
-var id;
-
 class _LoginState extends State<Login> {
+  final _formKey = GlobalKey<FormState>();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+
+  bool _isLoading = false;
+  String _errorMessage = '';
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _login() async {
+    // Set the loading state
+    setState(() {
+      _isLoading = true;
+      _errorMessage = '';
+    });
+
+    try {
+      // Send a POST request to the PHP script
+      final response = await http.post(
+        // Uri.parse('http://123.231.123.124/api_att/login.php'),
+        Uri.parse('http://123.231.123.124/brandixapi/login.php'),
+        body: {
+          'email': _emailController.text.trim(),
+          'password': _passwordController.text.trim(),
+        },
+      );
+
+      // Decode the response JSON
+      final data = json.decode(response.body);
+
+      // Check if the login was successful
+      if (data['success']) {
+        // Navigate to the home page
+        var uname = data['username'];
+
+        print(uname);
+        print("done");
+        // Navigator.push(
+        //   context,
+        //   MaterialPageRoute(builder: (context) =>  optionMenu()),
+        // );
+      } else {
+        // Set the error message
+        setState(() {
+          _errorMessage = data['message'];
+        });
+
+        print("not done");
+      }
+    } catch (e) {
+      // Set the error message
+      setState(() {
+        _errorMessage = 'please connect device to internet $e';
+      });
+    } finally {
+      // Set the loading state
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        flexibleSpace: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 90, 20, 0),
-          child: Container(
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/logob.png'),
-                fit: BoxFit.fitWidth,
+      body: Form(
+        key: _formKey,
+        child: ListView(
+          padding: EdgeInsets.all(16.0),
+          children: [
+            SizedBox(
+              height: 30,
+            ),
+            Padding(
+              padding: const EdgeInsets.all(30.0),
+              child: Image(image: AssetImage('assets/logob.png')),
+            ),
+            SizedBox(
+              height: 30,
+            ),
+            Center(
+              child: Text(
+                "Welcome To",
+                style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
               ),
             ),
-          ),
-        ),
-        centerTitle: true,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(10),
-            bottomRight: Radius.circular(10),
-          ),
-        ),
-        bottom: PreferredSize(
-          preferredSize: Size.fromHeight(180),
-          child: SizedBox(),
-        ),
-      ),
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        child: Container(
-          child: SingleChildScrollView(
-            child: Column(
+            Center(
+              child: Text(
+                "brandix",
+                style: TextStyle(fontSize: 20),
+              ),
+            ),
+            SizedBox(
+              height: 30,
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+              child: Container(
+                child: TextFormField(
+                  controller: _emailController,
+                  decoration: InputDecoration(
+                      hintText: 'Email',
+                      // errorText: 'Error Text',
+                      border: OutlineInputBorder()),
+                  keyboardType: TextInputType.emailAddress,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your email.';
+                    }
+                    if (!EmailValidator.validate(value)) {
+                      return 'Please enter a valid email address.';
+                    }
+                    return null;
+                  },
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+              child: Container(
+                child: TextFormField(
+                  controller: _passwordController,
+                  decoration: InputDecoration(
+                      hintText: 'Password',
+                      // errorText: 'Error Text',
+                      border: OutlineInputBorder()),
+                  obscureText: true,
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Please enter your password.';
+                    }
+                    return null;
+                  },
+                ),
+              ),
+            ),
+            SizedBox(height: 16.0),
+            Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SizedBox(
-                  height: 40,
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(25.0),
+                Text('Not a member? .'),
+                GestureDetector(
+                  onTap: () {
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(builder: (context) => register()),
+                    // );
+                  },
                   child: Text(
-                    "Welcome",
+                    'Register now',
                     style: TextStyle(
-                      fontSize: 30,
+                      color: Colors.blue,
                     ),
                   ),
                 ),
-
-                SizedBox(
-                  height: 0,
-                ),
-
-                //email
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                  child: Container(
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border.all(color: Colors.black),
-                        borderRadius: BorderRadius.circular(4)),
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 20.0),
-                      child: TextField(
-                        controller: emailController,
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          hintText: 'Email',
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-
-                SizedBox(
-                  height: 20,
-                ),
-
-                //password
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                  child: Container(
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border.all(color: Colors.black),
-                        borderRadius: BorderRadius.circular(4)),
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 20.0),
-                      child: TextField(
-                        controller: passwordController,
-                        obscureText: true,
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          hintText: 'Password',
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-
-                SizedBox(
-                  height: 20,
-                ),
-
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: OutlinedButton(
-                    child: Text(
-                      "Login",
-                      style: TextStyle(
-                        color: Colors.black,
-                      ),
-                    ),
-                    style: OutlinedButton.styleFrom(
-                      side: BorderSide(
-                        width: 2.0, // set the border weight to 2.0
-                        color: Colors.red,
-                      ),
-                      fixedSize: Size(150, 50),
-                    ),
-                    onPressed: () async {
-                      try {
-                        String email = emailController.text;
-                        String password = passwordController.text;
-
-                        if (email.isEmpty || password.isEmpty) {
-                          setState(() {
-                            errorMessage = 'Please enter email and password';
-                          });
-                          return;
-                        }
-
-                        String? uid =
-                            await getUidFromEmailAndPassword(email, password);
-
-                        QuerySnapshot querySnapshot =
-                            await FirebaseFirestore.instance
-                                .collection('user')
-                                .where('uid', isEqualTo: uid)
-                                .limit(1) // Limit the query to 1 document
-                                .get();
-
-                        if (uid == null) {
-                          setState(() {
-                            errorMessage = 'User not found';
-                          });
-                          return;
-                        }
-
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => SelectLine()),
-                        );
-
-                        emailController.text = "";
-                        passwordController.text = "";
-                      } on FirebaseAuthException catch (e) {
-                        setState(() {
-                          errorMessage = e.message!;
-                        });
-                      } catch (e) {
-                        print(e);
-                      }
-                    },
-                  ),
-                ),
-
-                SizedBox(
-                  height: 20,
-                ),
-
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text('Not a member? .'),
-                    Text(
-                      "Not a member? .",
-                      style: TextStyle(
-                        color: Color.fromRGBO(47, 114, 100, 1),
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-
-                SizedBox(
-                  height: 20,
-                ),
-                // show error message if present
-                if (errorMessage != null)
-                  Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Text(
-                      errorMessage!,
-                      style: TextStyle(
-                        color: Colors.red,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
               ],
             ),
-          ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(110, 20, 110, 0),
+              child: ElevatedButton(
+                child: _isLoading ? CircularProgressIndicator() : Text('Login'),
+                onPressed: _isLoading ? null : _login,
+              ),
+            ),
+            if (_errorMessage.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.only(top: 30),
+                child: Center(
+                  child: Padding(
+                    padding: EdgeInsets.only(top: 16.0),
+                    child: Text(
+                      _errorMessage,
+                      style: TextStyle(
+                        color: Colors.red,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+          ],
         ),
       ),
     );
-  }
-
-  Future<String?> getUidFromEmailAndPassword(
-      String email, String password) async {
-    try {
-      UserCredential userCredential =
-          await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-
-      print("----------------------");
-      print(userCredential?.user?.uid?.toString());
-
-      print("----------------------");
-
-      String? uid = userCredential?.user?.uid?.toString();
-      // DocumentSnapshot userSnapshot = await FirebaseFirestore.instance.collection('user').doc(uid).get();
-      // String role = userSnapshot.get('role');
-
-      String? role;
-
-      // Navigator.push(
-      //   context,
-      //   MaterialPageRoute(builder: (context) => select()),
-      // );
-
-      print("----------+------------");
-      print(uid);
-      print("----------------------");
-
-      return uid;
-    } catch (e) {
-      print('Error signing in: $e');
-      return null;
-    }
   }
 }
