@@ -37,7 +37,7 @@ class _LoginState extends State<Login> {
       // Send a POST request to the PHP script
       final response = await http.post(
         // Uri.parse('http://123.231.123.124/api_att/login.php'),
-        Uri.parse('http://123.231.123.124/brandixapi/login.php'),
+        Uri.parse('http://localhost/brandixapi/login.php'),
         body: {
           'email': _emailController.text.trim(),
           'password': _passwordController.text.trim(),
