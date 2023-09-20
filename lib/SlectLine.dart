@@ -15,15 +15,25 @@ class _SelectLineState extends State<SelectLine> {
   Future<void> _scanBarcode(int selectedButton) async {
     String barcodeResult = await FlutterBarcodeScanner.scanBarcode(
       '#ff6666',
-      'Cancel',
+      "cc",// Remove the cancel button text
       true,
       ScanMode.DEFAULT,
     );
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => CheckList(data: barcodeResult)),
-    );
+    if (barcodeResult == '-1') {
+      // User canceled the scan, navigate back to SelectLine screen
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) =>  SelectLine()),
+      );
+    } else if (barcodeResult.isNotEmpty) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => CheckList(data: barcodeResult)),
+      );
+    }
+
+
   }
 
   @override
