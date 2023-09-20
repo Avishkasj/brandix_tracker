@@ -6,6 +6,8 @@ import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
+import 'SlectLine.dart';
+
 class Login extends StatefulWidget {
   @override
   _LoginState createState() => _LoginState();
@@ -37,7 +39,7 @@ class _LoginState extends State<Login> {
       // Send a POST request to the PHP script
       final response = await http.post(
         // Uri.parse('http://123.231.123.124/api_att/login.php'),
-        Uri.parse('http://localhost/brandixapi/login.php'),
+        Uri.parse('https://api.futuretechbay.com/brandixapi/login.php'),
         body: {
           'email': _emailController.text.trim(),
           'password': _passwordController.text.trim(),
@@ -54,10 +56,10 @@ class _LoginState extends State<Login> {
 
         print(uname);
         print("done");
-        // Navigator.push(
-        //   context,
-        //   MaterialPageRoute(builder: (context) =>  optionMenu()),
-        // );
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) =>  SelectLine()),
+        );
       } else {
         // Set the error message
         setState(() {
