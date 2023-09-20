@@ -1,7 +1,8 @@
-import 'package:flutter/material.dart';
+import 'dart:convert';
 
-import 'Scanner.dart';
-import 'SlectLine.dart';
+import 'package:brandix_tracker/Status.dart';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class ChecklistItem {
   final String title;
@@ -37,47 +38,83 @@ class _CheckListState extends State<CheckList> {
     ChecklistItem(title: 'Hook, Looper, Blade, Feeddog, Foot, Needle & ETC Conditions'),
     ChecklistItem(title: 'Monthly check list Card Update'),
     ChecklistItem(title: 'Machine Condition'),
-    ChecklistItem(title: 'Direct Air Line Solution Working Condition'),
-    ChecklistItem(title: 'Auto Foot Lifting Working Condition'),
-    ChecklistItem(title: 'Suction Unit Working Condition'),
-    ChecklistItem(title: 'Dust Collector Conditions'),
-    ChecklistItem(title: 'Chopper Working Condition'),
-    ChecklistItem(title: 'Chain Cutter Working Condition'),
-    ChecklistItem(title: 'Thread Wiper [Air] Working Conditions'),
-    ChecklistItem(title: 'Synchronizer Cleaning & Working Condition'),
-    ChecklistItem(title: 'DCV & Air Piston Condition'),
-    ChecklistItem(title: 'Thread Trimmer Working Condition'),
-    ChecklistItem(title: 'Head Supporter Availability'),
-    ChecklistItem(title: 'Stand Rubber Bush'),
-    ChecklistItem(title: 'Machine Head Rubber Bush'),
-    ChecklistItem(title: 'Trimmer Spacer (F/L UBT)'),
-    ChecklistItem(title: 'Bobbin Winder Condition'),
-    ChecklistItem(title: 'Monthly Machine Card Update'),
-    ChecklistItem(title: 'Oil Leak'),
-    ChecklistItem(title: 'Idle Prevention Spring (Shuttle)'),
-    ChecklistItem(title: 'Needle Sticker Update'),
-    ChecklistItem(title: 'Timing Sticker Update'),
-    ChecklistItem(title: 'Cooling Fan Update'),
-    ChecklistItem(title: 'Caster Wheel Cleaning'),
-    ChecklistItem(title: 'Maintenance'),
-    ChecklistItem(title: 'Machine Wise Oil Level'),
-    ChecklistItem(title: 'Machine Wise Oil Working Condition'),
-    ChecklistItem(title: 'Cutter Unit Lubricated or Not'),
-    ChecklistItem(title: 'Machine Are Greasing or Not'),
-    ChecklistItem(title: 'Motor Box Cleaning Condition'),
-    ChecklistItem(title: 'Visible Rust'),
-    ChecklistItem(title: 'Critical Moving Parts Condition'),
-    ChecklistItem(title: 'Thread Cam Area Cleaning Condition'),
-    ChecklistItem(title: 'Machine Service Card Update'),
-    ChecklistItem(title: 'Module Wise Stain Mark Update'),
-    ChecklistItem(title: 'Safety'),
-    ChecklistItem(title: 'Machine Wise Finger Guard Condition'),
-    ChecklistItem(title: 'Machine Wise Eye Guard Condition'),
-    ChecklistItem(title: 'Pulley Guard & Belt Guard Condition'),
-    ChecklistItem(title: 'Paddle Carpet & Stand Carpet Condition')
-
     // ... Your checklist items
   ];
+
+  Future<void> _sendChecklistData() async {
+    // Create a list of checklist items with their checked and error statuses
+    List<Map<String, dynamic>> checklistData = checklist.map((item) {
+      return {
+        'title': item.title,
+        'isChecked': item.isChecked,
+        'isError': item.isError,
+      };
+    }).toList();
+
+    // Get the current date and time
+    DateTime now = DateTime.now();
+    String formattedDate = now.toIso8601String();
+
+    // Convert checklistData to a JSON string
+    String jsonData = jsonEncode(checklistData);
+
+    // Send the checklist data and date to the PHP backend
+    final response = await http.post(
+      Uri.parse('https://api.futuretechbay.com/brandixapi/save_checklist.php'), // Replace with your PHP endpoint
+      body: {
+        'machine_number': widget.data,
+        'checklist_data': jsonData, // Send as JSON string
+        'checklist_date': formattedDate,
+      },
+    );
+
+    final data = json.decode(response.body);
+
+    if (response.statusCode == 200) {
+      var uname = data['message'];
+
+      if(uname == "Data inserted successfully.")
+        {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => Status()),
+          );
+        }
+
+      else{
+        showErrorPopup(context, 'An error occurred. Please try again later.');
+      }
+
+      print(uname);
+      // Successfully sent data to the server
+      print('Data sent successfully ${response.statusCode}');
+    } else {
+      // Handle any errors here
+      print('Failed to send data: ${response.statusCode}');
+    }
+  }
+
+
+  void showErrorPopup(BuildContext context, String errorMessage) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Error'),
+          content: Text(errorMessage),
+          actions: <Widget>[
+            TextButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -154,9 +191,7 @@ class _CheckListState extends State<CheckList> {
               ),
               Expanded(
                 child: ElevatedButton(
-                  onPressed: () {
-                    // Navigate to the next screen or perform other actions here
-                  },
+                  onPressed: _sendChecklistData, // Send data to the backend
                   style: ElevatedButton.styleFrom(
                     primary: Colors.green, // Set the desired button color
                     fixedSize: Size(
