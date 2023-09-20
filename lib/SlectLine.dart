@@ -90,7 +90,7 @@ class _SelectLineState extends State<SelectLine> {
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 5,
                 ),
-                itemCount: 30,
+                itemCount: 40,
                 itemBuilder: (BuildContext context, int index) {
                   int buttonNumber = index + 1;
                   return Container(
