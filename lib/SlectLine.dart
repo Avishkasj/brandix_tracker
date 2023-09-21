@@ -15,10 +15,11 @@ class _SelectLineState extends State<SelectLine> {
   Future<void> _scanBarcode(int selectedButton) async {
     String barcodeResult = await FlutterBarcodeScanner.scanBarcode(
       '#ff6666',
-      "cc",// Remove the cancel button text
+      "Back",// Remove the cancel button text
       true,
       ScanMode.DEFAULT,
     );
+
 
     if (barcodeResult == '-1') {
       // User canceled the scan, navigate back to SelectLine screen
@@ -27,9 +28,10 @@ class _SelectLineState extends State<SelectLine> {
         MaterialPageRoute(builder: (context) =>  SelectLine()),
       );
     } else if (barcodeResult.isNotEmpty) {
+
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => CheckList(data: barcodeResult)),
+        MaterialPageRoute(builder: (context) => CheckList(data: barcodeResult,selectButtonValue:selectedButton)),
       );
     }
 
@@ -52,17 +54,27 @@ class _SelectLineState extends State<SelectLine> {
                   ),
                 ),
               ),
-              // Center(
-              //   child: Text(
-              //     'Select Line Number',
-              //     // Replace with your desired text
-              //     style: TextStyle(
-              //       color: Colors.white, // Adjust text color as needed
-              //       fontSize: 30, // Adjust font size as needed
-              //       fontWeight: FontWeight.bold, // Adjust font weight as needed
-              //     ),
-              //   ),
-              // ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(50, 60, 50, 60),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.black,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+
+                  child: Center(
+                    child: Text(
+                      'Select Line Number',
+                      // Replace with your desired text
+                      style: TextStyle(
+                        color: Colors.white, // Adjust text color as needed
+                        fontSize: 24, // Adjust font size as needed
+                        fontWeight: FontWeight.bold, // Adjust font weight as needed
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             ],
           ),
           backgroundColor: Colors.transparent,
@@ -94,7 +106,7 @@ class _SelectLineState extends State<SelectLine> {
         ),
         child: Column(
           children: [
-            SizedBox(height: 30,),
+            SizedBox(height: 10,),
             Expanded(
               child: GridView.builder(
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -114,7 +126,7 @@ class _SelectLineState extends State<SelectLine> {
                     ),
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        primary: Colors.blueGrey,
+                        primary: Colors.green,
                         padding: EdgeInsets.all(10),
                       ),
                       onPressed: () => _scanBarcode(buttonNumber),

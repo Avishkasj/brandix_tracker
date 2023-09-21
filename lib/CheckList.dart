@@ -15,33 +15,79 @@ class ChecklistItem {
 
 class CheckList extends StatefulWidget {
   final String data;
+  final int selectButtonValue; // Make sure it's not final
 
-  const CheckList({required this.data, Key? key}) : super(key: key);
+  CheckList({required this.data, required this.selectButtonValue, Key? key})
+      : super(key: key);
+
   @override
   _CheckListState createState() => _CheckListState();
 }
 
+
 class _CheckListState extends State<CheckList> {
   List<ChecklistItem> checklist = [
+    ChecklistItem(title: 'Machine Arrangement'),
     ChecklistItem(title: 'Machine Wise Air Regulator Arrangement'),
     ChecklistItem(title: 'Machine Wise & Module Air Leak'),
-    ChecklistItem(title: 'Machine Wise wire & Tube Arrangement'),
+    ChecklistItem(title: 'Machine Wise Wire & Tube Arrangement'),
     ChecklistItem(title: 'Machine Table Top Cleaning Condition'),
-    ChecklistItem(title: 'Machine Table Top Sticker arrangement'),
+    ChecklistItem(title: 'Machine Table Top Sticker Arrangement'),
     ChecklistItem(title: 'Blue Sheet Arrangement'),
-    ChecklistItem(title: 'Machine Table Top Condition [damage or Not]'),
+    ChecklistItem(title: 'Machine Table Top Condition (Damage or Not)'),
     ChecklistItem(title: 'Machine Head Cleaning Condition'),
     ChecklistItem(title: 'Machine Head Paint Condition'),
     ChecklistItem(title: 'Missing Screws'),
     ChecklistItem(title: 'Thread Stand Condition'),
     ChecklistItem(title: 'Thread Path & Tension Post Condition'),
     ChecklistItem(title: 'Hook, Looper, Blade, Feeddog, Foot, Needle & ETC Conditions'),
-    ChecklistItem(title: 'Monthly check list Card Update'),
+    ChecklistItem(title: 'Monthly Check List Card Update'),
     ChecklistItem(title: 'Machine Condition'),
+    ChecklistItem(title: 'Direct Air Line Solution Working Condition'),
+    ChecklistItem(title: 'Auto Foot Lifting Working Condition'),
+    ChecklistItem(title: 'Suction Unit Working Condition'),
+    ChecklistItem(title: 'Dust Collector Conditions'),
+    ChecklistItem(title: 'Chopper Working Condition'),
+    ChecklistItem(title: 'Chain Cutter Working Condition'),
+    ChecklistItem(title: 'Thread Wiper (Air) Working Conditions'),
+    ChecklistItem(title: 'Synchronizer Cleaning & Working Condition'),
+    ChecklistItem(title: 'DCV & Air Piston Condition'),
+    ChecklistItem(title: 'Thread Trimmer Working Condition'),
+    ChecklistItem(title: 'Head Supporter Availability'),
+    ChecklistItem(title: 'Stand Rubber Bush'),
+    ChecklistItem(title: 'Machine Head Rubber Bush'),
+    ChecklistItem(title: 'Trimmer Spacer (F/L UBT)'),
+    ChecklistItem(title: 'Bobbin Winder Condition'),
+    ChecklistItem(title: 'Monthly Machine Card Update'),
+    ChecklistItem(title: 'Oil Leak'),
+    ChecklistItem(title: 'Idle Prevention Spring (Shuttle)'),
+    ChecklistItem(title: 'Needle Sticker Update'),
+    ChecklistItem(title: 'Timing Sticker Update'),
+    ChecklistItem(title: 'Cooling Fan Update'),
+    ChecklistItem(title: 'Caste Wheel Cleaning Maintenance'),
+    ChecklistItem(title: 'Machine Wise Oil Level'),
+    ChecklistItem(title: 'Machine Wise Oil Working Condition'),
+    ChecklistItem(title: 'Cutter Unit Lubricated or Not'),
+    ChecklistItem(title: 'Machine Are Greasing or Not'),
+    ChecklistItem(title: 'Motor Box Cleaning Condition'),
+    ChecklistItem(title: 'Visible Rust'),
+    ChecklistItem(title: 'Critical Moving Parts Condition'),
+    ChecklistItem(title: 'Thread Cam Area Cleaning Condition'),
+    ChecklistItem(title: 'Machine Service Card Update'),
+    ChecklistItem(title: 'Module Wise Stain Mark Update'),
+    ChecklistItem(title: 'Safety'),
+    ChecklistItem(title: 'Machine Wise Finger Guard Condition'),
+    ChecklistItem(title: 'Machine Wise Eye Guard Condition'),
+    ChecklistItem(title: 'Pully Guard & Belt Guard Condition'),
+    ChecklistItem(title: 'Paddle Carpet & Stand Carpet Condition'),
     // ... Your checklist items
   ];
 
+
+
+
   Future<void> _sendChecklistData() async {
+
     // Create a list of checklist items with their checked and error statuses
     List<Map<String, dynamic>> checklistData = checklist.map((item) {
       return {
@@ -51,22 +97,29 @@ class _CheckListState extends State<CheckList> {
       };
     }).toList();
 
+
     // Get the current date and time
     DateTime now = DateTime.now();
-    String formattedDate = now.toIso8601String();
+    int year = now.year;
+    int month = now.month;
+
+// Create a formatted string with year and month
+    String formattedDate = '$year-$month';
 
     // Convert checklistData to a JSON string
     String jsonData = jsonEncode(checklistData);
 
     // Send the checklist data and date to the PHP backend
     final response = await http.post(
-      Uri.parse('https://api.futuretechbay.com/brandixapi/save_checklist.php'), // Replace with your PHP endpoint
+      Uri.parse('https://api.futuretechbay.com/brandixapi/save_checklist.php'),
       body: {
         'machine_number': widget.data,
-        'checklist_data': jsonData, // Send as JSON string
+        'line_number': widget.selectButtonValue.toString(), // Convert int to string
+        'checklist_data': jsonData,
         'checklist_date': formattedDate,
       },
     );
+
 
     final data = json.decode(response.body);
 
@@ -75,6 +128,7 @@ class _CheckListState extends State<CheckList> {
 
       if(uname == "Data inserted successfully.")
         {
+          print(widget.selectButtonValue);
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => Status()),
@@ -132,6 +186,9 @@ class _CheckListState extends State<CheckList> {
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
           ),
+
+
+
           Expanded(
             child: ListView.builder(
               itemCount: checklist.length,
