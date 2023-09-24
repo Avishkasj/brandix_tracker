@@ -94,6 +94,7 @@ class _CheckListState extends State<CheckList> {
         'title': item.title,
         'isChecked': item.isChecked,
         'isError': item.isError,
+        'line':widget.selectButtonValue,
       };
     }).toList();
 
@@ -117,6 +118,7 @@ class _CheckListState extends State<CheckList> {
         'line_number': widget.selectButtonValue.toString(), // Convert int to string
         'checklist_data': jsonData,
         'checklist_date': formattedDate,
+
       },
     );
 
@@ -174,18 +176,24 @@ class _CheckListState extends State<CheckList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.red,
-        title: Text('Checklist'),
+        backgroundColor: Colors.green,
+        title: Text('Machine | ${widget.data}',style: TextStyle(color: Colors.black),),
       ),
       body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Text(
-              'Machine Number: ${widget.data}',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-          ),
+          // Container(
+          //   width: 400,
+          //   color: Colors.black12,
+          //   child: Padding(
+          //     padding: const EdgeInsets.all(16.0),
+          //     child: Center(
+          //       child: Text(
+          //         'Machine | ${widget.data}',
+          //         style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          //       ),
+          //     ),
+          //   ),
+          // ),
 
 
 
@@ -239,9 +247,9 @@ class _CheckListState extends State<CheckList> {
                     });
                   },
                   style: ElevatedButton.styleFrom(
-                    primary: Colors.red, // Set the desired button color
+                    primary: Colors.black, // Set the desired button color
                     fixedSize: Size(
-                        double.infinity, 50), // Set the desired button height
+                        double.infinity, 80), // Set the desired button height
                   ),
                   child: Text('Mark All Checked'),
                 ),
@@ -252,9 +260,17 @@ class _CheckListState extends State<CheckList> {
                   style: ElevatedButton.styleFrom(
                     primary: Colors.green, // Set the desired button color
                     fixedSize: Size(
-                        double.infinity, 50), // Set the desired button height
+                        double.infinity, 80), // Set the desired button height
                   ),
-                  child: Text('Next'),
+                  child:Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text('Next'),
+                      SizedBox(width: 8),
+                      Icon(Icons.arrow_forward), // Replace with your desired icon
+                      // Adjust the spacing between icon and text
+                    ],
+                  ),
                 ),
               ),
             ],

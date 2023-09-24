@@ -1,5 +1,5 @@
+import 'package:brandix_tracker/Login.dart';
 import 'package:flutter/material.dart';
-
 
 class DrawerContent extends StatelessWidget {
   @override
@@ -9,9 +9,13 @@ class DrawerContent extends StatelessWidget {
       children: [
         DrawerHeader(
           decoration: BoxDecoration(
-            color: Colors.grey,
+            color: Colors.green,
           ),
-          child: Text('User Profile'),
+          child: Image(
+            image: AssetImage(
+              'assets/logob.png',
+            ),
+          ),
         ),
         ListTile(
           title: Text('Help'),
@@ -20,9 +24,12 @@ class DrawerContent extends StatelessWidget {
           },
         ),
         ListTile(
-          title: Text('Info'),
+          title: Text('Logout'),
           onTap: () {
-            Navigator.pop(context);
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) =>  Login()),
+            );
           },
         ),
         // Add more list tiles as needed
@@ -30,4 +37,3 @@ class DrawerContent extends StatelessWidget {
     );
   }
 }
-

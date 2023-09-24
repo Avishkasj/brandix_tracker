@@ -55,20 +55,19 @@ class _SelectLineState extends State<SelectLine> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.fromLTRB(50, 60, 50, 60),
+                padding: const EdgeInsets.fromLTRB(70, 90, 70, 30),
                 child: Container(
                   decoration: BoxDecoration(
-                    color: Colors.black,
+                    color: Colors.black26,
                     borderRadius: BorderRadius.circular(10),
                   ),
-
                   child: Center(
                     child: Text(
-                      'Select Line Number',
+                      'SELECT LINE',
                       // Replace with your desired text
                       style: TextStyle(
                         color: Colors.white, // Adjust text color as needed
-                        fontSize: 24, // Adjust font size as needed
+                        fontSize: 28, // Adjust font size as needed
                         fontWeight: FontWeight.bold, // Adjust font weight as needed
                       ),
                     ),
@@ -102,7 +101,7 @@ class _SelectLineState extends State<SelectLine> {
       ),
       body: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Colors.white38,
         ),
         child: Column(
           children: [
